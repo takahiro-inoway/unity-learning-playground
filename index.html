@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#10131a" />
+  <title>Unity学習プレイグラウンド</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ホーム"><span class="brand-mark">◈</span><span>Playground<span class="brand-light"> / Unity入門</span></span></a>
+    <div class="project-name"><span class="save-dot"></span><span>はじめてのシーン</span><span class="tiny-chevron">⌄</span></div>
+    <div class="top-actions"><button class="icon-button" id="helpButton" title="ヘルプ">？</button><button class="share-button" id="resetButton">リセット</button><button class="avatar">T</button></div>
+  </header>
+  <main class="workspace">
+    <aside class="panel hierarchy">
+      <div class="panel-title"><span>ヒエラルキー</span><button class="small-icon" id="addMenu" title="オブジェクトを追加">＋</button></div>
+      <div class="scene-root"><span class="chevron">⌄</span><span class="scene-icon">▧</span><span>SampleScene</span><span class="root-menu">•••</span></div>
+      <div id="objectList" class="object-list"></div>
+      <div class="hierarchy-tip"><span class="tip-icon">✦</span><span>シーンのオブジェクトを選んで、<br>右側で設定してみましょう。</span></div>
+    </aside>
+    <section class="center-column">
+      <nav class="main-tabs"><button class="tab active">シーン</button><button class="tab">ゲームビュー</button><span class="tab-spacer"></span><button class="view-control" id="gridToggle"><span>▦</span> グリッド</button><button class="view-control"><span>◉</span> 3D</button><button class="view-control" id="focusButton">⌖</button></nav>
+      <div class="scene-toolbar"><div class="tool-group"><button class="tool active" data-tool="select" title="選択">↖</button><button class="tool" data-tool="move" title="移動">✥</button><button class="tool" data-tool="rotate" title="回転">⟳</button><button class="tool" data-tool="scale" title="拡大縮小">⤢</button></div><span class="toolbar-divider"></span><button class="play-button" id="playButton"><span class="play-triangle">▶</span><span id="playLabel">再生</span></button><span class="shortcut">Ctrl + Enter</span><span class="toolbar-spacer"></span><button class="tool subtle" id="undoButton" title="元に戻す">↶</button><button class="tool subtle" id="redoButton" title="やり直す">↷</button></div>
+      <div class="viewport-wrap"><div id="viewport" class="viewport"><div class="viewport-label"><span class="live-dot"></span>シーンビュー <span class="label-sep">/</span> <span id="modeLabel">編集モード</span></div><div class="axis-widget"><span class="axis-y">Y</span><span class="axis-x">X</span><span class="axis-z">Z</span><i></i></div><div class="view-hint" id="viewHint">ドラッグで視点を回転 ・ ホイールでズーム</div></div></div>
+      <section class="console"><div class="console-head"><div><button class="console-tab selected">コンソール</button><button class="console-tab">プロジェクト</button></div><button class="clear-console" id="clearConsole">消去</button></div><div class="console-body" id="consoleBody"><div class="log-row"><span class="log-icon info">i</span><span>プレイグラウンドへようこそ！オブジェクトを追加して、シーンを作ってみましょう。</span><time>たった今</time></div></div></section>
+    </section>
+    <aside class="panel inspector"><div class="panel-title"><span>インスペクター</span><button class="small-icon">•••</button></div><div id="inspectorContent" class="inspector-content"></div></aside>
+  </main>
+  <footer class="statusbar"><span><i class="status-led"></i>準備完了</span><span class="status-center">ブラウザで動作中 <b>•</b> データはこの端末に保存されます</span><span>学習モード <span class="status-spark">✦</span></span></footer>
+  <div class="toast" id="toast"></div>
+  <dialog id="helpDialog"><div class="dialog-head"><strong>プレイグラウンドの使い方</strong><button id="closeHelp">×</button></div><div class="help-content"><p>Unityの基本を、ブラウザ上で気軽に試せます。</p><div class="help-row"><b>オブジェクトを追加</b><span>ヒエラルキーの「＋」から Cube や Sphere を追加します。</span></div><div class="help-row"><b>シーンを編集</b><span>オブジェクトを選択し、インスペクターで位置・回転・サイズを変更します。</span></div><div class="help-row"><b>ゲームを再生</b><span>▶ 再生を押すと、カメラから見たゲーム画面になります。もう一度押すと編集に戻ります。</span></div><div class="help-row"><b>視点を操作</b><span>シーン上をドラッグして回転、ホイールでズーム。オブジェクトをドラッグして移動できます。</span></div></div></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
