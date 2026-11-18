@@ -102,7 +102,11 @@ function makeObject(type, name, props = {}) {
     Platform: ['Transform', 'Mesh Renderer', 'Box Collider'],
     Ground: ['Transform', 'Mesh Renderer', 'Box Collider'],
   };
-  mesh.userData = { type, colliderType: ['Sphere', 'Coin'].includes(type) ? 'Sphere' : 'Box', components: defaults[type] || ['Transform', 'Mesh Renderer', 'Box Collider'] };
+  mesh.userData = {
+    type, colliderType: ['Sphere', 'Coin'].includes(type) ? 'Sphere' : 'Box',
+    components: defaults[type] || ['Transform', 'Mesh Renderer', 'Box Collider'],
+    settings: { ...(props.settings || {}) },
+  };
   scene.add(mesh);
   objects.set(name, mesh);
   return mesh;
@@ -143,6 +147,7 @@ function persist() {
           color:    o.material.color.getHex(),
           components: o.userData.components || [],
           colliderType: o.userData.colliderType || 'Box',
+          settings: o.userData.settings || {},
         }))
     ));
   } catch {}
@@ -170,7 +175,7 @@ function rebuild() {
 function sceneSnapshot() {
   return JSON.stringify([...objects.values()].filter(o => o.isMesh).map(o => ({
     name:o.name,type:o.userData.type,position:o.position.toArray(),rotation:o.rotation.toArray().slice(0,3),scale:o.scale.toArray(),
-    color:o.material.color.getHex(),components:o.userData.components||[],colliderType:o.userData.colliderType||'Box',
+    color:o.material.color.getHex(),components:o.userData.components||[],colliderType:o.userData.colliderType||'Box',settings:o.userData.settings||{},
   })));
 }
 
@@ -206,6 +211,7 @@ function applySceneSnapshot(snapshot) {
     if (Number.isFinite(item.color)) object.material.color.setHex(item.color);
     if (Array.isArray(item.components)) object.userData.components = item.components;
     if (['Box', 'Sphere', 'Mesh'].includes(item.colliderType)) object.userData.colliderType = item.colliderType;
+    if (item.settings && typeof item.settings === 'object') object.userData.settings = item.settings;
   }
   let maxNum = 0;
   for (const name of objects.keys()) { const match = name.match(/(\d+)$/); if (match) maxNum = Math.max(maxNum, Number(match[1])); }
@@ -413,6 +419,7 @@ try {
       if (p.color) o.material.color.setHex(p.color);
       if (Array.isArray(p.components)) o.userData.components = p.components;
       if (['Box', 'Sphere', 'Mesh'].includes(p.colliderType)) o.userData.colliderType = p.colliderType;
+      if (p.settings && typeof p.settings === 'object') o.userData.settings = p.settings;
     }
     // P2-#7: 最大サフィックスから serial を算出
     let maxNum = 0;
@@ -683,6 +690,7 @@ const playgroundApi = {
       if (Number.isFinite(item.color)) obj.material.color.setHex(item.color);
       if (Array.isArray(item.components)) obj.userData.components = item.components;
       if (['Box', 'Sphere', 'Mesh'].includes(item.colliderType)) obj.userData.colliderType = item.colliderType;
+      if (item.settings && typeof item.settings === 'object') obj.userData.settings = item.settings;
     }
     selected = [...objects.values()].find(o => o.isMesh) || null;
     rebuild(); persist();
@@ -690,7 +698,7 @@ const playgroundApi = {
   exportScene() {
     return [...objects.values()].filter(o => o.isMesh).map(o => ({
       name:o.name,type:o.userData.type,position:o.position.toArray(),rotation:o.rotation.toArray().slice(0,3),scale:o.scale.toArray(),
-      color:o.material.color.getHex(),components:o.userData.components||[],colliderType:o.userData.colliderType||'Box',
+      color:o.material.color.getHex(),components:o.userData.components||[],colliderType:o.userData.colliderType||'Box',settings:o.userData.settings||{},
     }));
   },
 };

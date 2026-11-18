@@ -221,8 +221,12 @@ export function installGameplay(api) {
 
     const oldX = player.position.x;
     const oldZ = player.position.z;
-    const nextX = oldX + dx * 4.8 * dt;
-    const nextZ = oldZ + dz * 4.8 * dt;
+    const settings = player.userData.settings || {};
+    const moveSpeed = Number.isFinite(Number(settings.moveSpeed)) ? Math.max(0.5, Math.min(15, Number(settings.moveSpeed))) : 4.8;
+    const jumpForce = Number.isFinite(Number(settings.jumpForce)) ? Math.max(1, Math.min(18, Number(settings.jumpForce))) : 7.2;
+    const gravityScale = Number.isFinite(Number(settings.gravityScale)) ? Math.max(0, Math.min(4, Number(settings.gravityScale))) : 1;
+    const nextX = oldX + dx * moveSpeed * dt;
+    const nextZ = oldZ + dz * moveSpeed * dt;
     let resolvedX = nextX;
     let resolvedZ = nextZ;
     for (const solid of solids) {
@@ -236,8 +240,8 @@ export function installGameplay(api) {
     player.position.z = resolvedZ;
 
     const jump = keys.has(' ') || keys.has('Space') || keys.has('Spacebar');
-    if (jump && onGround) { velocityY = 7.2; onGround = false; }
-    velocityY -= 18 * dt;
+    if (jump && onGround) { velocityY = jumpForce; onGround = false; }
+    velocityY -= 18 * gravityScale * dt;
     player.position.y += velocityY * dt;
     onGround = false;
 
@@ -282,7 +286,8 @@ export function installGameplay(api) {
     for (const object of meshObjects()) {
       if (object === player || !has(object, 'Rigidbody') || has(object, 'Player Controller') || isTrigger(object)) continue;
       if (!rigidVelocities.has(object)) rigidVelocities.set(object, 0);
-      let speed = rigidVelocities.get(object) - 18 * dt;
+      const gravityScale = Number.isFinite(Number(object.userData.settings?.gravityScale)) ? Math.max(0, Math.min(4, Number(object.userData.settings.gravityScale))) : 1;
+      let speed = rigidVelocities.get(object) - 18 * gravityScale * dt;
       const bounds = boxFor(object);
       let floorY = 0;
       for (const other of meshObjects()) {
@@ -376,6 +381,23 @@ export function installGameplay(api) {
         'Box Collider': '床や壁との当たり判定を有効にします',
       })[name]}</small>`;
       row.append(check, copy); section.append(row);
+    }
+    const settings = object.userData.settings || (object.userData.settings = {});
+    const settingRows = [];
+    if (has(object, 'Player Controller')) settingRows.push(['moveSpeed', '移動速度', 4.8, 0.5, 15, 0.5]);
+    if (has(object, 'Player Controller')) settingRows.push(['jumpForce', 'ジャンプ力', 7.2, 1, 18, 0.5]);
+    if (has(object, 'Rigidbody')) settingRows.push(['gravityScale', '重力スケール', 1, 0, 4, 0.1]);
+    for (const [key, label, fallback, min, max, step] of settingRows) {
+      const row = document.createElement('label'); row.className = 'component-setting';
+      const title = document.createElement('span'); title.textContent = label;
+      const input = document.createElement('input'); input.type = 'number'; input.min = String(min); input.max = String(max); input.step = String(step);
+      input.value = String(Number.isFinite(Number(settings[key])) ? settings[key] : fallback);
+      input.onchange = () => {
+        api.recordHistory();
+        settings[key] = Math.max(min, Math.min(max, Number(input.value)));
+        input.value = String(settings[key]); api.persist();
+      };
+      row.append(title, input); section.append(row);
     }
     button.after(section);
   }

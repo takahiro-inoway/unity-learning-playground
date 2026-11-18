@@ -6,6 +6,7 @@
 
 - Cube、Sphere、Player、Platform、Coin、Goal、Hazard などの作成
 - Transform とマテリアル色、コンポーネントの編集
+- プレイヤーの移動速度、ジャンプ力、Rigidbody の重力スケール調整
 - 位置・回転・サイズの編集、削除、Undo / Redo
 - Player Controller、Rigidbody、Collider、Collectible、Goal、Hazard の動作
 - WASD / 矢印キーでの移動、Space でのジャンプ、コイン収集とクリア判定
