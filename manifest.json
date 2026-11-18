@@ -1,0 +1,24 @@
+{
+  "name": "Unity学習プレイグラウンド",
+  "short_name": "Playground",
+  "description": "ブラウザで3Dゲーム開発の基礎を体験できるUnity入門プレイグラウンド",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#10131a",
+  "theme_color": "#10131a",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

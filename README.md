@@ -1,6 +1,17 @@
 # Unity学習プレイグラウンド
 
-Unity初心者が、ブラウザで3Dシーンの基本操作を体験できる静的な学習用アプリです。Three.js を使い、シーンの表示、プリミティブの追加、Transform の編集、再生・停止を行えます。
+ブラウザ上でシーンを組み立て、簡単な3Dゲームとして実行できるUnity入門用プレイグラウンドです。描画には Three.js を使用します。
+
+## できること
+
+- Cube、Sphere、Player、Platform、Coin、Goal、Hazard などの作成
+- Transform とマテリアル色、コンポーネントの編集
+- 位置・回転・サイズの編集、削除、Undo / Redo
+- Player Controller、Rigidbody、Collider、Collectible、Goal、Hazard の動作
+- WASD / 矢印キーでの移動、Space でのジャンプ、コイン収集とクリア判定
+- シーンのブラウザ内保存、JSON の読み書き、シーンを含む共有リンクの作成
+
+初回はコイン集めゲームのテンプレートを読み込んでいます。「ゲームテンプレート」でいつでもサンプルを作り直せます。
 
 ## 起動
 
@@ -8,6 +19,6 @@ Unity初心者が、ブラウザで3Dシーンの基本操作を体験できる�
 
 ## GitHub Pages への公開
 
-リポジトリの **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選択してください。`main` ブランチへの push で公開ワークフローが実行されます。
+リポジトリの **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選択します。`main` ブランチへの push で公開ワークフローが実行されます。
 
-シーン内の作成したメッシュはブラウザの localStorage に保存されます。別のブラウザや端末には共有されません。
+シーンの自動保存はブラウザの localStorage に保持されます。JSON ファイルと共有リンクを使って、別のブラウザや端末へシーンを移せます。

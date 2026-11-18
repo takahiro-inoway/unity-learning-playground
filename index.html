@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#10131a" />
   <title>Unity学習プレイグラウンド</title>
+  <meta name="description" content="ブラウザで3Dゲーム開発の基礎を体験できるUnity入門プレイグラウンド。" />
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="manifest" href="./manifest.json" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Unity学習プレイグラウンド" />
+  <meta property="og:description" content="ブラウザで3Dゲームを作って遊べるUnity入門プレイグラウンド。" />
+  <meta property="og:image" content="./assets/ogp.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="ja_JP" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Unity学習プレイグラウンド" />
+  <meta name="twitter:image" content="./assets/ogp.jpg" />
   <link rel="stylesheet" href="./style.css" />
   <script type="importmap">
     {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}
@@ -14,26 +27,50 @@
   <header class="topbar">
     <a class="brand" href="#" aria-label="ホーム"><span class="brand-mark">◈</span><span>Playground<span class="brand-light"> / Unity入門</span></span></a>
     <div class="project-name"><span class="save-dot"></span><span>はじめてのシーン</span><span class="tiny-chevron">⌄</span></div>
-    <div class="top-actions"><button class="icon-button" id="helpButton" title="ヘルプ">？</button><button class="share-button" id="resetButton">リセット</button><button class="avatar">T</button></div>
+    <div class="top-actions">
+      <button class="share-button" id="shareGameButton">共有</button>
+      <button class="share-button" id="downloadProjectButton">保存</button>
+      <button class="share-button" id="loadProjectButton">開く</button>
+      <input id="loadProjectInput" type="file" accept="application/json,.json" hidden />
+      <button class="icon-button" id="helpButton" title="ヘルプ">？</button>
+      <button class="share-button" id="resetButton">リセット</button>
+      <button class="avatar" aria-label="ユーザー">T</button>
+    </div>
   </header>
   <main class="workspace">
     <aside class="panel hierarchy">
       <div class="panel-title"><span>ヒエラルキー</span><button class="small-icon" id="addMenu" title="オブジェクトを追加">＋</button></div>
       <div class="scene-root"><span class="chevron">⌄</span><span class="scene-icon">▧</span><span>SampleScene</span><span class="root-menu">•••</span></div>
-      <div id="objectList" class="object-list"></div>
-      <div class="hierarchy-tip"><span class="tip-icon">✦</span><span>シーンのオブジェクトを選んで、<br>右側で設定してみましょう。</span></div>
+      <div id="objectList" class="object-list" role="listbox" aria-label="シーン内オブジェクト"></div>
+      <div class="hierarchy-tip"><span class="tip-icon">✦</span><span>オブジェクトを追加し、<br>コンポーネントを設定して遊ぼう。</span></div>
     </aside>
     <section class="center-column">
-      <nav class="main-tabs"><button class="tab active">シーン</button><button class="tab">ゲームビュー</button><span class="tab-spacer"></span><button class="view-control" id="gridToggle"><span>▦</span> グリッド</button><button class="view-control"><span>◉</span> 3D</button><button class="view-control" id="focusButton">⌖</button></nav>
-      <div class="scene-toolbar"><div class="tool-group"><button class="tool active" data-tool="select" title="選択">↖</button><button class="tool" data-tool="move" title="移動">✥</button><button class="tool" data-tool="rotate" title="回転">⟳</button><button class="tool" data-tool="scale" title="拡大縮小">⤢</button></div><span class="toolbar-divider"></span><button class="play-button" id="playButton"><span class="play-triangle">▶</span><span id="playLabel">再生</span></button><span class="shortcut">Ctrl + Enter</span><span class="toolbar-spacer"></span><button class="tool subtle" id="undoButton" title="元に戻す">↶</button><button class="tool subtle" id="redoButton" title="やり直す">↷</button></div>
-      <div class="viewport-wrap"><div id="viewport" class="viewport"><div class="viewport-label"><span class="live-dot"></span>シーンビュー <span class="label-sep">/</span> <span id="modeLabel">編集モード</span></div><div class="axis-widget"><span class="axis-y">Y</span><span class="axis-x">X</span><span class="axis-z">Z</span><i></i></div><div class="view-hint" id="viewHint">ドラッグで視点を回転 ・ ホイールでズーム</div></div></div>
-      <section class="console"><div class="console-head"><div><button class="console-tab selected">コンソール</button><button class="console-tab">プロジェクト</button></div><button class="clear-console" id="clearConsole">消去</button></div><div class="console-body" id="consoleBody"><div class="log-row"><span class="log-icon info">i</span><span>プレイグラウンドへようこそ！オブジェクトを追加して、シーンを作ってみましょう。</span><time>たった今</time></div></div></section>
+      <nav class="main-tabs"><button class="tab active" id="sceneTab">シーン</button><button class="tab" id="gameViewTab">ゲームビュー</button><span class="tab-spacer"></span><button class="view-control" id="gridToggle"><span>▦</span> グリッド</button><button class="view-control" id="viewModeButton"><span>◉</span> 3D</button><button class="view-control" id="focusButton">⌖</button></nav>
+      <div class="scene-toolbar">
+        <div class="tool-group"><button class="tool active" data-tool="select" title="選択">↖</button><button class="tool" data-tool="move" title="移動">✥</button><button class="tool" data-tool="rotate" title="回転">⟳</button><button class="tool" data-tool="scale" title="拡大縮小">⤢</button></div>
+        <span class="toolbar-divider"></span>
+        <button class="template-button" id="starterGameButton">ゲームテンプレート</button>
+        <button class="play-button" id="playButton"><span class="play-triangle">▶</span><span id="playLabel">再生</span></button>
+        <span class="shortcut">WASD / Space</span><span class="toolbar-spacer"></span>
+        <button class="tool subtle" id="undoButton" title="元に戻す">↶</button><button class="tool subtle" id="redoButton" title="やり直す">↷</button>
+      </div>
+      <div class="viewport-wrap">
+        <div id="viewport" class="viewport">
+          <div class="viewport-label"><span class="live-dot"></span><span id="viewportName">シーンビュー</span><span class="label-sep">/</span><span id="modeLabel">編集モード</span></div>
+          <div class="axis-widget"><span class="axis-y">Y</span><span class="axis-x">X</span><span class="axis-z">Z</span><i></i></div>
+          <div class="view-hint" id="viewHint">ドラッグで視点を回転 ・ ホイールでズーム</div>
+          <div class="game-hud" id="gameHud" hidden><div class="game-objective">コインを集めてゴールへ！</div><div class="game-stats"><span>◆ <b id="coinCount">0 / 0</b></span><span>♥ <b id="lifeCount">3</b></span></div><div class="game-controls-hint">WASD / 矢印キーで移動　Space でジャンプ</div></div>
+          <div class="game-end" id="gameEnd" hidden><div class="game-end-card"><span class="game-end-icon" id="gameEndIcon">✦</span><strong id="gameEndTitle">クリア！</strong><span id="gameEndMessage">コインを集めました。</span><button id="restartGameButton">もう一度遊ぶ</button></div></div>
+          <div class="touch-controls" id="touchControls" hidden><div class="dpad"><button data-game-key="ArrowUp">▲</button><div><button data-game-key="ArrowLeft">◀</button><button data-game-key="ArrowDown">▼</button><button data-game-key="ArrowRight">▶</button></div></div><button class="jump-button" data-game-key="Space">JUMP</button></div>
+        </div>
+      </div>
+      <section class="console" aria-label="コンソール"><div class="console-head"><div><button class="console-tab selected">コンソール</button><button class="console-tab">プロジェクト</button></div><button class="clear-console" id="clearConsole">消去</button></div><div class="console-body" id="consoleBody"><div class="log-row"><span class="log-icon info">i</span><span>ゲームテンプレートを読み込むと、すぐに遊べます。</span><time>たった今</time></div></div></section>
     </section>
     <aside class="panel inspector"><div class="panel-title"><span>インスペクター</span><button class="small-icon">•••</button></div><div id="inspectorContent" class="inspector-content"></div></aside>
   </main>
   <footer class="statusbar"><span><i class="status-led"></i>準備完了</span><span class="status-center">ブラウザで動作中 <b>•</b> データはこの端末に保存されます</span><span>学習モード <span class="status-spark">✦</span></span></footer>
   <div class="toast" id="toast"></div>
-  <dialog id="helpDialog"><div class="dialog-head"><strong>プレイグラウンドの使い方</strong><button id="closeHelp">×</button></div><div class="help-content"><p>Unityの基本を、ブラウザ上で気軽に試せます。</p><div class="help-row"><b>オブジェクトを追加</b><span>ヒエラルキーの「＋」から Cube や Sphere を追加します。</span></div><div class="help-row"><b>シーンを編集</b><span>オブジェクトを選択し、インスペクターで位置・回転・サイズを変更します。</span></div><div class="help-row"><b>ゲームを再生</b><span>▶ 再生を押すと、カメラから見たゲーム画面になります。もう一度押すと編集に戻ります。</span></div><div class="help-row"><b>視点を操作</b><span>シーン上をドラッグして回転、ホイールでズーム。オブジェクトをドラッグして移動できます。</span></div></div></dialog>
+  <dialog id="helpDialog"><div class="dialog-head"><strong>プレイグラウンドの使い方</strong><button id="closeHelp">×</button></div><div class="help-content"><p>オブジェクトとコンポーネントを組み合わせて、遊べるシーンを作れます。</p><div class="help-row"><b>ゲームを始める</b><span>「ゲームテンプレート」でサンプルを読み込み、再生ボタンを押します。</span></div><div class="help-row"><b>操作する</b><span>ゲーム中は WASD または矢印キーで移動、Space でジャンプ。コインを集めてゴールに触れます。</span></div><div class="help-row"><b>シーンを作る</b><span>＋から Player、Platform、Coin、Goal などを追加します。インスペクターから座標やコンポーネントを変更できます。</span></div><div class="help-row"><b>保存・共有する</b><span>保存でシーンJSONをダウンロード。共有でシーンを含むリンクをコピーします。</span></div></div></dialog>
   <script type="module" src="./app.js"></script>
 </body>
 </html>

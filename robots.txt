@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://takahiro-inoway.github.io/unity-learning-playground/sitemap.xml
